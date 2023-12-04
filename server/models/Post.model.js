@@ -5,10 +5,7 @@ const PostSchema = mongoose.Schema({
         type:String,
         require:'Text is Required'
     },
-    photo:{
-        data:Buffer,
-        contentType:String
-    },
+    photo:String,
     postedBy:{
         type:mongoose.Schema.ObjectId,
         ref:'Users'

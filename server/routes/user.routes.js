@@ -7,7 +7,6 @@ const userRoutes = exress.Router()
 userRoutes.get('/',isAuthorized,getAllUsers)
           .get('/:userId',isAuthorized,getUser)
           .get('/details/:user',isAuthorized,getUser)
-
           .put("/:userId",isAuthorized,updateUser)
           .delete("/:userId",isAuthorized,deleteUser);
 userRoutes.put('/:userId/follow',isAuthorized,addFollowing,addFollower)

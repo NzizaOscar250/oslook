@@ -7,6 +7,7 @@ export const getUserPosts=async(req,res)=>{
 
     try {
         const result = await Post.find({postedBy:req.profile._id})
+                                    
                                  .populate("postedBy",'_id username profile ')
                                  .populate('comments.postedBy','_id username ')
                                  .sort("createdAt")
@@ -24,8 +25,8 @@ export const getAllPosts=async(req,res)=>{
 
     try {
         const result = await Post.find()
-                                 .populate("postedBy",'_id username')
-                                 .populate('comments.postedBy','_id username')
+                                 .populate("postedBy",'_id username profile')
+                                 .populate('comments.postedBy','_id username profile ')
                                  .sort("-createdAt")
                                  .exec()
             if(!result) return res.status(400).json({error:"No posts Found"})
@@ -41,19 +42,24 @@ export const createPost = async(req,res)=>{
    try {
        const post = req.body
        const userId = req.userId
-
+       console.log(post)
+     
+       
     const result = await Post.create({
-        ...post,
-        postedBy:userId
+         text:post.text,
+         photo:post.photo,
+         postedBy:userId
     })
 
 
 if(!result) res.status(400).json({error:"could not make a post"})
+
 const newPost = await Post.findById(result._id)
-.populate("postedBy",'_id username')
-.populate('comments.postedBy','_id username')
+.populate("postedBy",'_id username profile')
+.populate('comments.postedBy','_id username profile')
 .sort("-createdAt")
 .exec()
+
 
 
 if(!newPost) res.status(400).json({error:"refused to retrieve"})
@@ -116,8 +122,8 @@ export const likePost = async(req,res)=>{
         if(!result) res.status(400).json({error:'Post Removed'})
         
         const newPost = await Post.findById(result._id)
-                                  .populate("postedBy",'_id username')
-                                  .populate('comments.postedBy','_id username')
+                                  .populate("postedBy",'_id username profile')
+                                  .populate('comments.postedBy','_id username profile')
                                   .sort("-createdAt")
                                   .exec()
 
@@ -138,8 +144,8 @@ export const unlikePost = async(req,res)=>{
         if(!result) res.status(400).json({error:'invalid Post'})
         
         const newPost = await Post.findById(result._id)
-                                  .populate("postedBy",'_id username')
-                                  .populate('comments.postedBy','_id username')
+                                  .populate("postedBy",'_id username profile')
+                                  .populate('comments.postedBy','_id username profile')
                                   .sort("-createdAt")
                                   .exec()
 
@@ -163,13 +169,13 @@ export const addComment = async(req,res)=>{
         let result = await Post.findByIdAndUpdate(req.post._id,
         {$push: {comments:comment}},
         {new: true})
-        .populate('comments.postedBy', '_id username')
-        .populate('postedBy', '_id username')
+        .populate('comments.postedBy', '_id username ')
+        .populate('postedBy', '_id username  ')
         .exec()
         
         const newPost = await Post.findById(result._id)
-                                    .populate("postedBy",'_id username')
-                                    .populate('comments.postedBy','_id username')
+                                    .populate("postedBy",'_id username ')
+                                    .populate('comments.postedBy','_id username profile')
                                     .sort("-createdAt")
                                     .exec()
 
