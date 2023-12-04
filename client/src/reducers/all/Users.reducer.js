@@ -1,14 +1,16 @@
-import { FETCH_USER, FETCH_USERS } from "../../constants"
+import {  FETCH_USERS, FOLLOW_USER, UNFOLLOW_USER, UPDATE_PROFILE } from "../../constants"
 
 export default function Users (users = [], action){
-  switch (action.type) {
 
+  switch (action.type) {
   case FETCH_USERS:
     return action.payload
-  case FETCH_USER:
-    return action.payload
-    //  return users?.map((user)=>user._id === action.payload._id?action.payload:user)
+  case FOLLOW_USER:
+  case UNFOLLOW_USER:
+  case UPDATE_PROFILE:
+     return users?.map((user)=>user._id === action.payload._id?action.payload:user)
   default:
     return users
   } 
+  
 }

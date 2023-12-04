@@ -5,47 +5,42 @@ import {  CloudUpload } from "@material-ui/icons";
 import {Icon} from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchUser} from "../actions/users"
-
+import { updateProfile } from "../actions/users";
 export default function EditUser(){
 const classes = Styles()
 const fileInputRef = useRef(null);
-const [fileBase64, setFileBase64] = useState(null);
 const {userId} = useParams()
 const dispatch = useDispatch();
-const {Users} = useSelector(state=>state)
+const Users= useSelector((state)=> userId ? state.Users.find((u)=>u._id === userId) : null)
 
 const [values, setValues] = useState({
-    name: '',
+    username: '',
     profile:'',
     password: '',
     email: '',
     about:'',
     })
 
+
 useEffect(() => {
-        if(userId){
-            dispatch(fetchUser(userId))
-            
-        }
     setValues({...values,...Users})
+},[Users])
 
-})
-
-console.log(Users)
 const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value })
    }
    
    
 const clickSubmit = () => {
-    const user = {
-    name: values.name || undefined,
+    const formData = {
+    username: values.username || undefined,
     email: values.email || undefined,
     password: values.password || undefined,
-    photo: fileBase64 || null
+    profile: values.profile || null,
+    about:values.about || undefined
     }
 
+    dispatch(updateProfile(userId,formData))
 
 }
 
@@ -58,7 +53,7 @@ const handleFileChange = (event) => {
 
     reader.onloadend = () => {
       // `reader.result` contains the base64-encoded file data
-      setFileBase64(reader.result);
+       setValues({...values,profile:reader.result})
     };
 
     // Read the file as a data URL
@@ -82,7 +77,7 @@ const handleHiddenInputClick = () => {
  </Typography>
  
  <div className={classes.avatarIcon}>
-    <Avatar  src={fileBase64 && fileBase64 } style={{width:80,height:80,margin:'5px auto',border:'2px solid grey'}}/>
+    <Avatar  src={values.profile && values.profile } style={{width:80,height:80,margin:'5px auto',border:'2px solid grey'}}/>
         
     
     <div>
@@ -93,35 +88,14 @@ const handleHiddenInputClick = () => {
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />
-
-      {/* Visible label */}
-      {/* <label style={{ cursor: 'pointer' }}>
-        Select File
-      </label> */}
-
-      {/* {fileBase64 && (
-        <div>
-          <p>Base64 Encoded Data:</p>
-          <textarea value={fileBase64} readOnly rows={10} cols={30} />
-        </div>
-      )} */}
     </div>
 
- {/* <input accept="image/*" type="file"
- 
- style={{display:'none'}}
- id="icon-button-file" 
- ref={uploadInputRef}
- /> */}
 
 <Button variant="contained" color="secondary"
   onClick={handleHiddenInputClick}  >
 <span style={{paddingInline:10}}> Choose Picture  </span><CloudUpload/>
  </Button>
 
-{/* <label htmlFor="icon-button-file">
- 
-</label> */}
  </div>
 
 <br /><br />
@@ -135,25 +109,31 @@ const handleHiddenInputClick = () => {
     value={values.about}
     onChange={handleChange('about')}
     margin="normal"
+    variant="outlined"
  />
 
  <br/>
  <TextField id="name" 
  label="Change username"
  className={classes.textField}
- value={values.name} 
- onChange={handleChange('name')
+ value={values.username} 
+ onChange={handleChange('username')
 }
+variant="outlined"
  margin="normal"/>
  <br/>
  <TextField id="email" type="email" label="Change email"
  className={classes.textField}
  value={values.email} onChange={handleChange('email')}
- margin="normal"/>
+ margin="normal"
+ variant="outlined"
+ />
  <br/>
  <TextField id="password" type="password" label="Change password"
  className={classes.textField} value={values.password}
- onChange={handleChange('password')} margin="normal"/>
+ onChange={handleChange('password')} margin="normal"
+ variant="outlined"
+ />
  <br/>
  {
  values.error && (<Typography component="p" color="error">

@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -8,10 +8,8 @@ import { Link} from 'react-router-dom';
 import {  Close,Group, Search, SearchRounded, CodeOutlined  } from '@material-ui/icons';
 import DropMenu from './DropMenu';
 import Styles from '../Styles';
-import { Avatar, Badge,InputBase, LinearProgress } from '@material-ui/core';
-import livingRoom from "../assets/img/livingroom.jpg"
-
-
+import { Avatar, InputBase, LinearProgress } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 const  Navigations = ({userId})=>{
     const [menu, setMenu] =  useState({open:false,anchor:null}) 
     const Toggle=function(e){
@@ -22,6 +20,12 @@ const  Navigations = ({userId})=>{
     }
     const [open,setOpen] = useState(false)
     const classes = Styles({open})
+    const Users= useSelector((state)=> userId ? state.Users.find((u)=>u._id === userId._id) : null)
+
+useEffect(() => {
+  console.log("stille tesf..................")
+
+}, [Users])
 
  
 return (
@@ -78,54 +82,15 @@ return (
 
 
  <div className={classes.icons}>
-            
- {/* <Badge badgeContent={4} color='inherit'  component={Link} to="/followothers">
-                <Group />
-            </Badge> */}
-            
-            {/* <IconButton
-            color = 'inherit'
-            component={Link}
-            to="/"
-            className={classes.responsive}
-            >
-                <Home/>
-            </IconButton> */}
           
           <IconButton component={Link} to="/findpeople">
-            <Badge badgeContent={5} color="secondary" overlap="rectangular">
+            {/* <Badge badgeContent={5} color="secondary" overlap="rectangular"> */}
                 <Group style={{color:'white'}} />
-            </Badge> 
+            {/* </Badge>  */}
          </IconButton>
            
-             
-            
-     
-     {/* <Badge badgeContent={4} color='secondary'>
-        <Notifications/>
-     </Badge> */}
-{/*         
-        <Button color="inherit"
-       component={Link}
-       to="/profile"
-       className={classes.responsive}
-        ></Button>
-
-
-        <Button color="inherit"
-            component={Link}
-            to="/auth/signin"
-            className={classes.responsive}
-                ></Button>
-
-                        <Button color="inherit"
-            component={Link}
-            to="/auth/signup"
-            className={classes.responsive}
-                ></Button>
-*/}
-                <IconButton onClick={Toggle}>
-                <Avatar src={livingRoom} alt="not found"/>
+                <IconButton onClick={Toggle} style={{background: 'grey',padding:0,width:50,height:50}}>
+                        <Avatar src={Users?.profile} alt="not found" style={{ width:'100%',height:50}}/>
                 </IconButton> 
 
             </div>

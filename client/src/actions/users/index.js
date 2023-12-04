@@ -1,5 +1,5 @@
 import * as api from "../../api"
-import {FETCH_USER, FETCH_USERS, FOLLOW_USER, UNFOLLOW_USER} from "../../constants"
+import {FETCH_USER, FETCH_USERS, FOLLOW_USER, UNFOLLOW_USER, UPDATE_PROFILE} from "../../constants"
 
 //follow user
 export const followUser = (uid) => async(dispatch)=> {
@@ -37,13 +37,39 @@ export const fetchUsers = () => async(dispatch)=> {
 }
 
 
-// fetch user details 
+// fetch user
 
 export const fetchUser = (userId) => async(dispatch)=> {
     try {
         const {data} = await api.fetchUser(userId)
         
         dispatch({type:FETCH_USER,payload:data})
+    } catch (error) {
+     console.log(error.message)
+    }
+ }
+
+
+// fetch user details 
+
+export const fetchUserDetails = (userId) => async(dispatch)=> {
+    try {
+        const {data} = await api.fetchUserDetails(userId)
+        
+        dispatch({type:FETCH_USER,payload:data})
+    } catch (error) {
+     console.log(error.message)
+    }
+ }
+
+ //update profile
+
+ 
+export const updateProfile = (userId,formData) => async(dispatch)=> {
+    try {
+        const {data} = await api.updateProfile(userId,formData)
+        console.log(data)
+        dispatch({type:UPDATE_PROFILE,payload:data})
     } catch (error) {
      console.log(error.message)
     }

@@ -5,6 +5,7 @@ export const CREATE_POSTS = "CREATE_POSTS",
              FETCH_USER_POSTS = "FETCH_USER_POSTS",
              FETCH_USERS="FETCH_USERS",
              FETCH_USER="FETCH_USER",
+            
              
              FOLLOW_USER="FOLLOW_USER",
              UNFOLLOW_USER="UNFOLLOW_USER",

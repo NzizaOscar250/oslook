@@ -1,6 +1,6 @@
 import { Paper,Typography,List,Avatar,ListItem,ListItemSecondaryAction,ListItemAvatar,
-    ListItemText,IconButton,Divider, makeStyles } from "@material-ui/core"
-import { Link,useParams } from "react-router-dom"
+    ListItemText,IconButton,Divider, makeStyles, Button, CircularProgress } from "@material-ui/core"
+import { Link,useNavigate,useParams } from "react-router-dom"
 import { Edit} from "@material-ui/icons"
 import { teal , purple } from "@material-ui/core/colors"
 import ConfirmActions from "../components/ConfirmActions"
@@ -8,10 +8,9 @@ import { useState,useEffect } from "react"
 import TabsMenu from "../components/TabsMenu"
 import { useDispatch,useSelector } from "react-redux";
 import { fetchUserPosts } from "../actions/posts";
-import Loading from "../components/Loading"
+import { fetchUser } from "../actions/users"
 import moment from "moment/moment"
 import FollowUnfollow from "../components/FollowUnfollow"
-import { fetchUsers } from "../actions/users"
 
 
 
@@ -63,8 +62,8 @@ const Profile =({posts})=>{
     const [open,setOpen] = useState(false)
     const dispatch = useDispatch()
     const {userId}= useParams()
-    const {Posts,Auth} = useSelector((state)=>state)
-    const Users= useSelector((state)=> userId ? state.Users.find((u)=>u._id === userId) : null)
+    const {Users,Posts,Auth} = useSelector((state)=>state)
+    const [loading,setLoading] = useState(true)
     const onShowConfirm = ()=>{
         setOpen(!open)
     }
@@ -74,16 +73,17 @@ const Profile =({posts})=>{
     }
     
 useEffect(() => {
-
     if(userId){
          dispatch(fetchUserPosts(userId))
-         dispatch(fetchUsers())
+         dispatch(fetchUser(userId))
+         setLoading(false)
+         
     }
     else{
         console.log("failed")
     }
    
-}, [dispatch,userId])
+}, [Users])
 
 // check follow
 
@@ -98,7 +98,7 @@ const checkFollow = (user) => {
    let following =  checkFollow(Users)
  
 const classes = Styles()
-if (!Users) return <Loading title="processing"/>
+
 return (
         <>
         
@@ -121,7 +121,7 @@ return (
 
         <ListItem>
             <ListItemAvatar>
-                <Avatar src={Users?.profile} style={{border:'2px solid dodgerblue'}}/>
+                <Avatar/>
                  
                 
             </ListItemAvatar>
@@ -145,7 +145,7 @@ return (
 
                    
             </>
-        ):  (Auth.authData.username !== Users.username) && <FollowUnfollow following={following} userId={Users._id} />
+        ):  (Auth.authData.username !== Users.username) && <FollowUnfollow following={following} userId={Users._id} loading={loading}/>
        
  }
  

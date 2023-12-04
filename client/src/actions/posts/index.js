@@ -50,7 +50,7 @@ export const createPosts= (formData)=>async(dispatch)=>{
 export const deletePost = (postId)=>async(dispatch)=>{
       try {
             const { data } = await api.deletePost(postId)
-            console.log(data)
+            
             dispatch({type:DELETE_POST,payload:data})
       } 
       catch (error) {
@@ -64,7 +64,7 @@ export const deletePost = (postId)=>async(dispatch)=>{
 export const likePost = (postId)=>async(dispatch)=>{
       try {
             const { data } = await api.likePost(postId)
-            console.log(data)
+          
             dispatch({type:LIKE_POST,payload:data})
       } 
       catch (error) {
@@ -92,7 +92,7 @@ export const addComment = (postId,comment)=>async(dispatch)=>{
             const {data} = await api.addComment(postId,comment)
 
             dispatch({type:ADD_COMMENT,payload:data})
-            console.log(data)
+          
       } catch (error) {
             console.log(error)
             

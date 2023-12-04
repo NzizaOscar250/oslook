@@ -1,82 +1,29 @@
-import { Avatar, CardHeader,Card,Menu, MenuItem, IconButton,
-    TextField, CardContent, Typography, Button, Paper } from "@material-ui/core"
+import { Avatar, CardHeader,Card, IconButton,
+    TextField, CardContent, Typography, Button, CircularProgress, CardMedia } from "@material-ui/core"
 import Styles from "../Styles"
-import avatar from "../assets/img/avatar.png"
-import { CommentRounded, Delete, FavoriteBorderRounded, FavoriteRounded, 
-     MoreVertRounded, SendRounded } from "@material-ui/icons"
+import { CommentRounded, Delete, FavoriteBorderRounded, FavoriteRounded,  SendRounded } from "@material-ui/icons"
 import { Link } from "react-router-dom"
 import { useState } from "react"
-import {useDispatch, useSelector} from "react-redux"
-import {addComment, likePost, unLikePost} from "../actions/posts"
+import { useDispatch, useSelector} from "react-redux"
+import {addComment, likePost, unLikePost,deletePost} from "../actions/posts"
 import moment from "moment/moment"
 import { grey } from "@material-ui/core/colors"
 
 
 
-const DropMenu = ({anchor,onClose,isOpen,postId,removePost})=>{
-    
-return (
-    <>
-    <Menu anchorEl={anchor}
-              open={isOpen}
-          elevation={0}
-          style={{marginLeft:-110,marginTop:20,
-            paddingTop:0}}
-          color="default"
-            
-          
-        > 
-        <Paper component="div" style={{paddingInline:8}}>
-
-            <MenuItem onClick={onClose} 
-                style={{background:grey[200]}}>
-                <Button color='default'
-                 endIcon={<Delete color="secondary"/>}
-                 size="small"
-                 onClick={(e)=>{
-                    e.stopPropagation()
-                    removePost(postId)
-                 }}  
-                 fullWidth
-                 >
-                    Delete
-                </Button>
-            </MenuItem>
-            <MenuItem 
-            onClick={(e)=>{
-                e.stopPropagation()
-                onClose()
-             }}
-             
-            >
-                Close
-            </MenuItem>
-            
-            </Paper>
-        </Menu>
-    </>
-)
-}
 
 // _________________________________________comment Body________________________
 
 
 
 
-export default function Posts({posts}){
+export default function Posts({posts,profile,user}){
 const classes = Styles()
 const [showComment,setShowComment]=useState()
 // const posts = useSelector((state)=>state.Posts)
 const dispatch = useDispatch();
 
-const [menu, setMenu] =  useState({open:false,anchor:null})
-
-    const Toggle=function(e){
-     setMenu({open:!menu.open,anchor:e.target})
-    }
-    const onClose = ()=>{
-        setMenu({open:false,anchor:null})
-    }
+   
     const [comment,setText] = useState('')
 
 const ToggleShowComment=()=>{
@@ -103,17 +50,18 @@ const handleLikes = (type,postId)=>event=>{
 
        dispatch(addComment(data.postId,data.comment))
        setText('')
-    console.log(data)
 
+    }
+    else if (type === 'DELETE_POST'){
+        console.log(postId)
+        dispatch(deletePost(postId))
     }
     else{
         console.log('error onliking')
     }
 }
 
-const handleDelete =(id)=>{
 
-}
 
    return (
     <>
@@ -122,24 +70,21 @@ const handleDelete =(id)=>{
             <>    {
                     posts.map((post)=>
                     (<Card  style={{marginBlock:10,position:'relative'}} key={post._id}>
-            <DropMenu 
-                isOpen={menu.open}
-                anchor={menu.anchor} 
-                onClose={onClose}
-                postId={post._id}
-                removePost={handleDelete}
-            />
+
 
                         <CardHeader
                             avatar={
-                                <Avatar src={avatar}/>
+                            <IconButton style={{background: 'white',padding:0,width:50,height:50}}>
+                                <Avatar src={post.postedBy?.profile} alt="not found"
+                                 style={{ width:'100%',height:50}}/>
+                             </IconButton> 
             
                             }
                             
                             action={
                                 
-                                    <IconButton onClick={Toggle}>
-                                         <MoreVertRounded/>
+                                 post.postedBy._id === user &&   <IconButton onClick={handleLikes("DELETE_POST",post._id)}>
+                                         <Delete/>
                                     </IconButton>
                                 
                             }
@@ -149,7 +94,10 @@ const handleDelete =(id)=>{
                             className={classes.cardHeader}
                            
                             />
-            
+
+                            {
+                            post.photo && <CardMedia style={{width:'100%',height:400}} image={post.photo} title="testing"/>
+                            }
                             <CardContent>
                               <Typography variant="body2">
                              {post.text}
@@ -208,7 +156,10 @@ const handleDelete =(id)=>{
                             <div className={classes.cardHeader}>
                                      <CardHeader 
                 avatar={
-                    <Avatar style={{width:30,height:30}}/>
+        
+                            !profile ?<CircularProgress/>: <Avatar src={profile} alt="not found"
+                                 style={{ width:30,height:30}}/>
+                            
                 }
                 title={
                     <form onSubmit={handleLikes('SEND_COMMENT',post._id)}  style={{paddingInline:5,display:'flex',alignItems:'end',gap:5}}>
@@ -245,21 +196,26 @@ const handleDelete =(id)=>{
              <CardHeader 
               key={item._id}
                 avatar={
-                    <Avatar  style={{width:30,height:30}}/>
+                    <Avatar src={item.postedBy?.profile}  style={{width:30,height:30}}/>
                 }
                 title={    
                     
                     
                     <p style={{background:'white',padding:10,borderRadius:'8px'}}>
                         <Link to={`/profile/${item.postedBy._id}`} className={classes.link}
-                         color="primary">{item.postedBy.username}</Link>
-                        <br/>
-                         <span style={{textTransform:'capitalize',fontSize:'12px'}}>{item.text}</span>
-                        <span style={{display:'flex',justifyContent:'left',gap:4,alignItems:'center'}}>
+                         style={{color:'dodgerblue',display:'block'}}>{item.postedBy.username}</Link>
+                       
+                         <span style={{textTransform:'capitalize',fontSize:'14px',color:'grey',
+                         paddingBlock:6,paddingInline:6,fontWeight:400,display:'block'}}>
+                            {item.text}
+                        </span>
+                        
+                        <span style={{display:'flex',justifyContent:'left',
+                        gap:4,alignItems:'center',fontSize:13}}>
                             {moment(item.createdAt).fromNow()}
                             
-                            <IconButton size="small">
-                                <Delete />
+                            <IconButton color="secondary" style={{padding:0}}>
+                                <Delete style={{ fontSize:16}}/>
                             </IconButton>
                         </span>
                    </p>

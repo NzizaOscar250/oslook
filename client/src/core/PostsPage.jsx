@@ -1,7 +1,6 @@
 
 import { Avatar,CardHeader, LinearProgress, Paper, makeStyles } from "@material-ui/core"
 import {Card,Typography} from "@material-ui/core"
-import avatar from "../assets/img/avatar.png"
 import { grey, indigo } from "@material-ui/core/colors"
 import Posts from "../posts/Post"
 import { useDispatch, useSelector } from "react-redux"
@@ -30,13 +29,13 @@ const useStyles = makeStyles(theme => ({
 const PostsPage = () => {
     
     const classes = useStyles();
-    const {Auth,Loading:loading,Posts:posts} = useSelector((state)=>state)
+    const {Auth,Loading:loading,Posts:posts,Users} = useSelector((state)=>state)
     const dispatch = useDispatch()  
     useEffect(()=>{
        dispatch(fetchPost())
+    },[dispatch])
 
-    })
-
+    const user = Users.find((user)=>user._id === Auth.authData._id ?user: null )
    
 
   return (
@@ -52,15 +51,17 @@ const PostsPage = () => {
             <Card elevation={0} style={{width:'90%',margin:'auto'}}>
                 <CardHeader
                     avatar={
-                        <Avatar src={avatar}/>
+                        
+                        <Avatar src={user?.profile} alt="not found" style={{ width:50,height:50}}/>
+               
                     }
                     title={(
                             <Typography 
                                 component={Link} 
-                                to={`/profile/${Auth?.authData?._id}`} 
+                                to={`/profile/${user?._id}`} 
                                 style={{textTransform:'capitalize',fontWeight:'bold',color:'dodgerblue',textDecoration:'none'}}>
                                     
-                                {Auth?.authData?.username}
+                                {user?.username}
                             </Typography>
                             )
                         }
@@ -87,7 +88,7 @@ const PostsPage = () => {
             
         <div style={{width:'90%',margin:'auto',paddingBlock:20}}>
         
-        <Posts posts={posts}/>
+        <Posts posts={posts} profile={user?.profile} user={user?._id}/>
 
           {/* <LinearProgress aria-busy={true} aria-label="Loading.."
            aria-rowspan={3}/> */}

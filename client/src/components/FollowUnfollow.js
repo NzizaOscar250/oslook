@@ -1,10 +1,9 @@
-import { Button, CircularProgress } from "@material-ui/core"
-import { followUser,unFollowUser} from "../actions/users"
+import { Button } from "@material-ui/core"
+import { followUser, unFollowUser} from "../actions/users"
 import { useDispatch } from "react-redux"
-
-
 import {  makeStyles } from "@material-ui/core";
 import {red, indigo } from "@material-ui/core/colors";
+
 const Styles = makeStyles(theme => ({
     followBtn:{
         background:indigo[600],
@@ -40,37 +39,21 @@ const FollowUnfollow = ({following,userId,loading}) => {
         
     }
     
-    // useEffect(() => {
-      
-    //     if(userId){
-    //         dispatch(fetchUserPosts(userId))
-    //         dispatch(fetchUser(userId))
-            
-    //    }
-    //    else{
-    //     dispatch(fetchUsers())
-    //        console.log("failed")
-    //    }
-      
-    // }, [dispatch,userId])
-    
-
-
-    if (following && !loading){
+    if (following){
          return (<Button className={classes.unfollowBtn}  
          variant="contained"
          onClick={handleFollow('UNFOLLOW',userId)}
          disableElevation>unfollow</Button>) 
     }
-    else if (!following && !loading){
+    else{
         return ( <Button className={classes.followBtn}
         variant="contained"
         onClick={handleFollow('FOLLOW',userId)}
         disableElevation>Follow</Button>)
     }
-    else{
-        return <CircularProgress size={12}/>
-    }
+    // else{
+    //     return <CircularProgress size={12}/>
+    // }
   
 }
 

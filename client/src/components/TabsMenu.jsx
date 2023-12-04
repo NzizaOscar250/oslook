@@ -1,9 +1,9 @@
-import { AppBar, Avatar,ListItemText, List, ListItem, ListItemIcon, Tab, Tabs } from "@material-ui/core";
+import { AppBar, Avatar,ListItemText, List, ListItem, ListItemIcon, Tab, Tabs, Typography } from "@material-ui/core";
 import Styles from "../Styles";
 import { useState } from "react";
 import { Link} from "react-router-dom";
-import avatar from "../assets/img/avatar.png"
 import Posts from "../posts/Post";
+
 
 
 
@@ -46,11 +46,26 @@ const changeTab=(e,value)=>{
             <List>
                {
                 users && users.followers && users.followers.map((item)=>(
-                    <ListItem component={Link}  to={`/profile/${item._id}`} key={item._id}>
+                    <ListItem component={Link} 
+                     to={`/profile/${item._id}`} key={item._id}
+                     
+                     >
                          <ListItemIcon>
-                            <Avatar src={avatar}/>
+                            <Avatar src={item?.profile}/>
                         </ListItemIcon>
-                        <ListItemText primary={item.username} />
+                        <ListItemText
+                         primary={
+                            <Typography component="p"
+                             style={{fontWeight:600,fontSize:14,color:'dodgerblue',paddingBlock:0}}>
+                                {item.username} 
+                            </Typography>
+                         }
+                        secondary={
+                                <Typography component="span"
+                                style={{fontSize:12,color:'grey'}}
+                                >{item.about && `About: ${item.about}`}</Typography>
+                        }/>
+                        
                 
                     </ListItem>
                 ))
@@ -69,9 +84,21 @@ const changeTab=(e,value)=>{
                     users.following.map((item)=>(
                         <ListItem component={Link} to={`/profile/${item._id}`} key={item._id}>
                             <ListItemIcon>
-                                <Avatar src={avatar}/>
+                                <Avatar src={item?.profile}/>
                             </ListItemIcon>
-                            <ListItemText primary={item.username} />
+                            <ListItemText 
+                                primary={
+                                    <Typography component="p"
+                                     style={{fontWeight:600,fontSize:14,color:'dodgerblue',paddingBlock:0}}>
+                                        {item.username} 
+                                    </Typography>
+                                 }
+                                secondary={
+                                    <Typography component="span"
+                                    style={{fontSize:12,color:'grey'}}
+                                    >{item.about && `About: ${item.about}`}</Typography>
+                                     }
+                                />
                     
                         </ListItem>
                     ))

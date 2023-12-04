@@ -1,8 +1,10 @@
-import { CardContent,TextField,IconButton,makeStyles,Button,Avatar } from "@material-ui/core"
+import { CardContent,TextField,IconButton,makeStyles,Button } from "@material-ui/core"
 import { useState } from "react"
 import { CameraAltRounded } from "@material-ui/icons"
 import { useDispatch } from "react-redux"
 import { createPosts } from "../actions/posts"
+
+import { useRef } from "react"
 const useStyles = makeStyles(theme => ({
     
     title: {
@@ -11,39 +13,46 @@ const useStyles = makeStyles(theme => ({
    paddingTop:0,
 
     },
-    
+   
     
    }))
 export default function NewFeeds(){
     
     const [feeds,setFeeds] = useState({text:'',photo:''})
     const dispatch = useDispatch()
-  
+    const fileInputRef = useRef(null);
 
     const handleChange =name=>e=> {
         
         setFeeds({...feeds,[name]:e.target.value})
 
     }
-    const handleFileChange= (e)=>{
-        console.log(e.target)
-        const file = e.target.files[0]
-        if(file){
-            const reader = new FileReader()
-            reader.onloaded = ()=>{
-                setFeeds({...feeds,photo:reader.result})
-                console.log(reader.result)
-            }
-
-            reader.readAsDataURL(file)
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+      
+        if (file) {
+          const reader = new FileReader();
+      
+          reader.onloadend = () => {
+            // `reader.result` contains the base64-encoded file data
+             setFeeds({...feeds,photo:reader.result})
+          };
+      
+          // Read the file as a data URL
+          reader.readAsDataURL(file);
         }
-    }
+      };
+
+      const handleHiddenInputClick = () => {
+        fileInputRef.current.click();
+      };
+      
 
     const handleSubmit = (e)=>{
         e.preventDefault()
         dispatch(createPosts(feeds))
-        setFeeds({text:'',photo:''})
-        console.log(feeds)
+       setFeeds({text:'',photo:''})
+
        
     }
     const classes = useStyles()
@@ -64,26 +73,31 @@ export default function NewFeeds(){
                          onChange={handleChange('text')}
                          value={feeds.text}
                          />
-                             {feeds.photo && <Avatar/>}
+                             {/* {feeds.photo && <Avatar/>}
+                           
+      
+ */}
+
                            <div className={classes.avatarIcon}>
                             <input accept="image/*" type="file"
                             style={{display:'none'}}
-                            id="icon-button-file" 
-                            value={feeds.photo}
+                        
+                            ref={fileInputRef}
+                           
                             onChange={handleFileChange}
 
                             />
                             
                             
 
-                            <label htmlFor="icon-button-file">
           <IconButton  color="secondary" 
                  style={{paddingInline:0,margin:0}}
                  component="span"
+                 onClick={handleHiddenInputClick}
                  >
                                 <CameraAltRounded/>
                             </IconButton>
-                            </label>
+                           
                         </div>
                         
 

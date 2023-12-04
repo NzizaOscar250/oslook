@@ -1,15 +1,15 @@
-import { Avatar, Button, IconButton, List, ListItem,Card, ListItemAvatar,ListItemSecondaryAction,ListItemText, Typography, Chip, LinearProgress } from "@material-ui/core";
+import { Avatar, Button, IconButton, List, ListItem,Card, ListItemAvatar,
+    ListItemSecondaryAction,ListItemText, Typography, Chip } from "@material-ui/core";
 import avatar from "../assets/img/avatar.png"
 import { Link } from "react-router-dom";
 import { RemoveRedEye } from "@material-ui/icons";
 import Styles from "../Styles";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { fetchUsers, followUser,unFollowUser } from "../actions/users";
+import {  followUser,unFollowUser } from "../actions/users";
 
 export default function FindPeople(){
 
-    const {Users,Loading,Auth} = useSelector((state)=>state)
+    const {Users,Auth} = useSelector((state)=>state)
      
     const dispatch = useDispatch()
 
@@ -28,15 +28,12 @@ export default function FindPeople(){
         }
         
     }
-    useEffect(() => {
-        dispatch(fetchUsers())
-      }, [dispatch])
-  
+   
     const classes = Styles()
         return (
             <>
             <Card>
-                { Loading && <LinearProgress/>}
+            
             <Typography variant="h6" 
              className={classes.title}>Who To Follow</Typography>
              

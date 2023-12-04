@@ -27,7 +27,7 @@ export const fetchPosts = ()=>API.get('/posts/all')
 export const fetchUserPosts = (userId)=>API.get(`/posts/user/${userId}`)
 
 //delete api
-export const deletePost=(postId)=>API.delete(`/remove/${postId}`)
+export const deletePost=(postId)=>API.delete(`posts/remove/${postId}`)
 //like post
 export const likePost = (postId)=>API.put(`/posts/like/${postId}`)
 export const unLikePost = (postId)=>API.put(`/posts/unlike/${postId}`)
@@ -39,13 +39,16 @@ export const unLikePost = (postId)=>API.put(`/posts/unlike/${postId}`)
 //users
     //get user + details
        export const fetchUser = (userId)=>API.get(`/users/${userId}`)
-export const fetchUserDetails = (userId)=>API.get(`/users/details/${userId}`)
-//get users
+       export const fetchUserDetails = (userId)=>API.get(`/users/details/${userId}`)
+    //get users
         export const fetchUsers = ()=>API.get('/users')
     // follow user
         export const followUser = (followerId)=>API.put(`/users/${followerId}/follow`,{userId:user._id,followId:followerId})
     //unfollow user
         export const unFollowUser = (followingId)=>API.put(`/users/${followingId}/unfollow`,{unfollowId:followingId})
+    
+    //update profile
+    export const updateProfile = (userId,formData)=>API.put(`/users/${userId}`,formData)
 
 export const deleteProfile = (userId)=>API.delete(`/users/${userId}`)
 export const fetchUserProfile = (userId)=>API.get(`/users/${userId}`)
